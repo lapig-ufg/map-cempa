@@ -1,7 +1,7 @@
 {
-    "name": "plataforms-base",
+    "name": "cempa-platform-server",
     "version": "0.1.0",
-    "description": "Plataforms base application",
+    "description": "CEMPA Platform Server",
     "main": "app.js",
     "dependencies": {
         "adm-zip": "^0.5.9",
