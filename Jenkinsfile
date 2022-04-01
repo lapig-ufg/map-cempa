@@ -104,7 +104,7 @@ node {
 
         stage ('Pull imagem on DEV') {
         sshagent(credentials : ['KEY_FULL']) {
-            sh "$SERVER_HOMOL_SSH 'docker pull $registryprod/$application_name:latest'"
+            sh "$SERVER_HOMOL_SSH 'docker pull $registryhomol/$application_name:latest'"
                 }
             
         }
