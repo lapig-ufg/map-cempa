@@ -1,13 +1,13 @@
-    node {
-        
+node {
+
     load "$JENKINS_HOME/.envvars"
     def exists=fileExists "src/server/package-lock.json"
     def exists2=fileExists "src/client/package-lock.json"
-    def application_name= "app_base"
+    def application_name= "app_cempa"
 
         stage('Checkout') {
             git branch: 'develop',
-            url: 'https://github.com/lapig-ufg/plataform-base.git'
+            url: 'https://github.com/lapig-ufg/map-cempa.git'
         }
         stage('Validate') {
             sh 'git pull origin develop'
@@ -18,7 +18,7 @@
 		def scannerHome = tool 'sonarqube-scanner';
                     withSonarQubeEnv("sonarqube") {
                     sh "${tool("sonarqube-scanner")}/bin/sonar-scanner \
-                    -Dsonar.projectKey=plataforma-base \
+                    -Dsonar.projectKey=map-cempa \
                     -Dsonar.sources=. \
                     -Dsonar.css.node=. \
                     -Dsonar.host.url=$SonarUrl \
@@ -48,7 +48,7 @@
                             echo 'No'
                             sh "cd src/client && npm install" 
                         }
-            
+
                         //VERIFY IF BUILD IS COMPLETE AND NOTIFY IN DISCORD ABOUT OF THE RESULT
                         sh "export NODE_OPTIONS=--max-old-space-size=8096"
                         def status = sh(returnStatus: true, script: "cd src/client && ng build --stats-json --source-map=false --no-progress")
@@ -82,20 +82,20 @@
                             autoCancelled = true
                             error('Aborting the build.')
     }                               
-                
+
                 }
         }
         stage('Building Image') {
-            dockerImage = docker.build registryhomol + "/$application_name:$BUILD_NUMBER", "--build-arg  --no-cache -f Dockerfile ."
+            dockerImage = docker.build registryhomol + "/$application_name:$BUILD_NUMBER"
         }
         stage('Push Image to Registry') {
-            
+
             docker.withRegistry( "$Url_Private_Registry", "$registryCredential" ) {
             dockerImage.push("${env.BUILD_NUMBER}")
             dockerImage.push("latest")
-                        
+
                 }   
-                
+
             }
         stage('Removing image Locally') {
             sh "docker rmi $registryhomol/$application_name:$BUILD_NUMBER"
@@ -103,36 +103,36 @@
         }
 
         stage ('Pull imagem on DEV') {
-        sshagent(credentials : ['DEV']) {
+        sshagent(credentials : ['KEY_FULL']) {
             sh "$SERVER_HOMOL_SSH 'docker pull $registryhomol/$application_name:latest'"
                 }
             
         }
 
         stage('Deploy container on DEV') {
-                
-                        configFileProvider([configFile(fileId: "$File_Json_Id_APP_BASE_PROD", targetLocation: 'container-plataformbase-deploy-homol.json')]) {
+
+                        configFileProvider([configFile(fileId: "$File_Json_Id_APP_CEMPA_HOMOL", targetLocation: 'container-map-cempa-deploy-homol.json')]) {
 
                             def url = "http://$SERVER_HOMOL/containers/$application_name?force=true"
                             def response = sh(script: "curl -v -X DELETE $url", returnStdout: true).trim()
                             echo response
 
                             url = "http://$SERVER_HOMOL/containers/create?name=$application_name"
-                            response = sh(script: "curl -v -X POST -H 'Content-Type: application/json' -d @container-plataformbase-deploy-homol.json -s $url", returnStdout: true).trim()
+                            response = sh(script: "curl -v -X POST -H 'Content-Type: application/json' -d @container-map-cempa-deploy-homol.json -s $url", returnStdout: true).trim()
                             echo response
                         }
-    
+
             }            
         stage('Start container on DEV') {
 
                         final String url = "http://$SERVER_HOMOL/containers/$application_name/start"
                         final String response = sh(script: "curl -v -X POST -s $url", returnStdout: true).trim()
                         echo response                    
-                    
-                
+
+
             }                      
         stage('Send message to Discord') {
-            
+
                         //SEND DISCORD NOTIFICATION
                         def discordImageSuccess = 'https://www.jenkins.io/images/logos/formal/256.png'
                         def discordImageError = 'https://www.jenkins.io/images/logos/fire/256.png'
@@ -158,9 +158,9 @@
                                 webhookURL: urlWebhook,
                                 successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'),
                                 thumbnail: 'SUCCESS'.equals(currentBuild.currentResult) ? discordImageSuccess : discordImageError              
-                    
+
             }         
-        
-        
-        
+
+
+
         }
