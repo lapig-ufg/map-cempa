@@ -51,19 +51,29 @@ node {
 
                         //VERIFY IF BUILD IS COMPLETE AND NOTIFY IN DISCORD ABOUT OF THE RESULT
                         sh "export NODE_OPTIONS=--max-old-space-size=8096"
-                        def status = sh(returnStatus: true, script: "cd src/client && ng build --stats-json --source-map=false --no-progress")
+                        def status = sh(returnStatus: true, script: "cd src/client &&  --stats-json --source-map=false --no-progress")
                         if (status != 0) {
                             echo "FAILED BUILD!"
                             currentBuild.result = 'FAILED'
                             def discordImageSuccess = 'https://www.jenkins.io/images/logos/formal/256.png'
                             def discordImageError = 'https://www.jenkins.io/images/logos/fire/256.png'
+                        
+                            def Author_ID=sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                            def Author_Name=sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                            def Author_Data=sh(script: "git log -1 --format=%cd --date=local",returnStdout: true).trim()
+                            def Project_Name=sh(script: "git config --local remote.origin.url",returnStdout: true).trim()
+                            def Last_Commit=sh(script: "git show --summary | grep 'commit' | awk '{print \$2}'",returnStdout: true).trim()
+                            def Comment_Commit=sh(script: "git log -1 --pretty=%B",returnStdout: true).trim()
+                            def Date_Commit=sh(script: "git show -s --format=%ci",returnStdout: true).trim()
 
                             def discordDesc =
                                     "Result: ${currentBuild.currentResult}\n" +
-                                            "Project: Nome projeto\n" +
-                                            "Commit: Quem fez commit\n" +
-                                            "Author: Autor do commit\n" +
-                                            "Message: EROO NA BUILD!\n" +
+                                            "Project: $Project_Name\n" +
+                                            "Commit: $Last_Commit\n" +
+                                            "Author: $Author_ID\n" +
+                                            "Author_Email: $Author_Name\n" +
+                                            "Message: $Comment_Commit\n" +
+                                            "Date: $Date_Commit\n" +
                                             "Duration: ${currentBuild.durationString}"
 
                                             //Variaveis de ambiente do Jenkins - NOME DO JOB E NÚMERO DO JOB
@@ -78,9 +88,9 @@ node {
                                     title: discordTitle,
                                     webhookURL: urlWebhook,
                                     successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'),
-                                    thumbnail: 'SUCCESS'.equals(currentBuild.currentResult) ? discordImageSuccess : discordImageError
+                                    thumbnail: 'SUCCESS'.equals(currentBuild.currentResult) ? discordImageSuccess : discordImageError      
                             autoCancelled = true
-                            error('Aborting the build.')
+                            error('Aborting the build.')        
     }                               
 
                 }
@@ -133,16 +143,26 @@ node {
             }                      
         stage('Send message to Discord') {
 
-                        //SEND DISCORD NOTIFICATION
+                       //SEND DISCORD NOTIFICATION
                         def discordImageSuccess = 'https://www.jenkins.io/images/logos/formal/256.png'
                         def discordImageError = 'https://www.jenkins.io/images/logos/fire/256.png'
+                        
+                        def Author_ID=sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                        def Author_Name=sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                        def Author_Data=sh(script: "git log -1 --format=%cd --date=local",returnStdout: true).trim()
+                        def Project_Name=sh(script: "git config --local remote.origin.url",returnStdout: true).trim()
+                        def Last_Commit=sh(script: "git show --summary | grep 'commit' | awk '{print \$2}'",returnStdout: true).trim()
+                        def Comment_Commit=sh(script: "git log -1 --pretty=%B",returnStdout: true).trim()
+                        def Date_Commit=sh(script: "git show -s --format=%ci",returnStdout: true).trim()
 
                         def discordDesc =
                                 "Result: ${currentBuild.currentResult}\n" +
-                                        "Project: Nome projeto\n" +
-                                        "Commit: Quem fez commit\n" +
-                                        "Author: Autor do commit\n" +
-                                        "Message: mensagem do changelog ou commit\n" +
+                                        "Project: $Project_Name\n" +
+                                        "Commit: $Last_Commit\n" +
+                                        "Author: $Author_ID\n" +
+                                        "Author_Email: $Author_Name\n" +
+                                        "Message: $Comment_Commit\n" +
+                                        "Date: $Date_Commit\n" +
                                         "Duration: ${currentBuild.durationString}"
 
                                         //Variaveis de ambiente do Jenkins - NOME DO JOB E NÚMERO DO JOB
