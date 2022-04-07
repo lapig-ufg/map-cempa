@@ -58,8 +58,8 @@ node {
                             def discordImageSuccess = 'https://www.jenkins.io/images/logos/formal/256.png'
                             def discordImageError = 'https://www.jenkins.io/images/logos/fire/256.png'
                         
-                            def Author_ID=sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                            def Author_Name=sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                            def Author_Name=sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                            def Author_Email=sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
                             def Author_Data=sh(script: "git log -1 --format=%cd --date=local",returnStdout: true).trim()
                             def Project_Name=sh(script: "git config --local remote.origin.url",returnStdout: true).trim()
                             def Last_Commit=sh(script: "git show --summary | grep 'commit' | awk '{print \$2}'",returnStdout: true).trim()
@@ -70,8 +70,8 @@ node {
                                     "Result: ${currentBuild.currentResult}\n" +
                                             "Project: $Project_Name\n" +
                                             "Commit: $Last_Commit\n" +
-                                            "Author: $Author_ID\n" +
-                                            "Author_Email: $Author_Name\n" +
+                                            "Author: $Author_Name\n" +
+                                            "Author_Email: $Author_Email\n" +
                                             "Message: $Comment_Commit\n" +
                                             "Date: $Date_Commit\n" +
                                             "Duration: ${currentBuild.durationString}"
@@ -147,8 +147,8 @@ node {
                         def discordImageSuccess = 'https://www.jenkins.io/images/logos/formal/256.png'
                         def discordImageError = 'https://www.jenkins.io/images/logos/fire/256.png'
                         
-                        def Author_ID=sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                        def Author_Name=sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                        def Author_Name=sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                        def Author_Email=sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
                         def Author_Data=sh(script: "git log -1 --format=%cd --date=local",returnStdout: true).trim()
                         def Project_Name=sh(script: "git config --local remote.origin.url",returnStdout: true).trim()
                         def Last_Commit=sh(script: "git show --summary | grep 'commit' | awk '{print \$2}'",returnStdout: true).trim()
@@ -159,8 +159,8 @@ node {
                                 "Result: ${currentBuild.currentResult}\n" +
                                         "Project: $Project_Name\n" +
                                         "Commit: $Last_Commit\n" +
-                                        "Author: $Author_ID\n" +
-                                        "Author_Email: $Author_Name\n" +
+                                        "Author: $Author_Name\n" +
+                                        "Author_Email: $Author_Email\n" +
                                         "Message: $Comment_Commit\n" +
                                         "Date: $Date_Commit\n" +
                                         "Duration: ${currentBuild.durationString}"
