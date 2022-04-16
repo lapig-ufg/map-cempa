@@ -1,3 +1,7 @@
+GET https://cempadev.lapig.iesa.ufg.br/service/point/serie?lat=-16.72967362703032&lon=-49.332582950592034
+Accept: application/json
+
+###
 GET http://localhost:3000/service/point/serie?lat=-16.72967362703032&lon=-49.332582950592034&start=2022-04-04 00:00:00.000&end=2022-04-08 23:00:00.000
 Accept: application/json
 

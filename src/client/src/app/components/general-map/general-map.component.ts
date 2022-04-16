@@ -155,6 +155,7 @@ export class GeneralMapComponent implements OnInit, Ruler, AfterContentChecked {
   public defaultStyle: Style;
   public geoJsonStyles: any;
 
+
   public displayGallery: boolean;
   public gallery = [] as any;
   public galleryResponsiveOptions: any[] = [

@@ -15,10 +15,9 @@ import View from 'ol/View';
 import { defaults as defaultInteractions } from 'ol/interaction';
 import * as Proj from 'ol/proj';
 import {
-  defaults as defaultControls,
-  Control, MousePosition
+  defaults as defaultControls
 } from 'ol/control';
-import { log2 } from "ol/math";
+import OLCesium from 'olcs/OLCesium.js';
 
 export const DEFAULT_HEIGHT = '500px';
 export const DEFAULT_WIDTH = '500px';
@@ -42,10 +41,9 @@ export class OlMapComponent implements OnInit, AfterViewInit {
   @Output() onReady = new EventEmitter<any>();
 
   public target: string = 'map-' + Math.random().toString(36).substring(2);
-  map: Map;
-
+  public map: Map;
   private mapEl: HTMLElement;
-  public : boolean;
+  public map3d: OLCesium;
 
   constructor(private elementRef: ElementRef, private cdRef: ChangeDetectorRef) {
 
@@ -68,6 +66,9 @@ export class OlMapComponent implements OnInit, AfterViewInit {
       interactions: defaultInteractions({ altShiftDragRotate: false, pinchRotate: false }),
       controls: defaultControls({ attribution: false, zoom: false }).extend([]),
     });
+
+    // this.map3d = new OLCesium({map: this.map});
+    // this.map3d.setEnabled(true);
 
     setTimeout(() => {
       this.onReady.emit(this.map);
