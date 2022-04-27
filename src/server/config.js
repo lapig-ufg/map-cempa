@@ -17,6 +17,7 @@ module.exports = function (app) {
         "downloadDir": appRoot + env.PLATAFORMS_FOLDER_LOCALHOST + env.DOWNLOAD_DIR,
         "hotsiteDir": env.HOTSITE_DIR, //folders to HotSite Gallery
         "colorbarDir": env.COLORBAR_DIR,
+        "staticDir": env.STATIC_DIR,
         "layersDir": env.LAYERS_DIR,
         "pg_lapig": {
             "user": env.PG_USER,
