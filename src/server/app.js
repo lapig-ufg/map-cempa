@@ -18,6 +18,27 @@ load('config.js', { 'verbose': false })
     .then('middleware')
     .into(app);
 
+const allowedOrigins = [
+    'http://localhost:4200',
+    'https://atlasdaspastagens.ufg.br',
+    'https://covidgoias.ufg.br',
+    'https://maps.lapig.iesa.ufg.br',
+    'https://cepf.lapig.iesa.ufg.br',
+    'https://araticum.lapig.iesa.ufg.br'
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Origin not allowed by CORS'));
+        }
+    },
+};
+
+app.options('*', cors(corsOptions));
+app.all('*', cors(corsOptions));
 
 app.database.client.init(function () {
     app.use(cookie);
